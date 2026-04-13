@@ -232,30 +232,16 @@
                 rememberExpirationKey: "staticrypt_expiration",
                 rememberPassphraseKey: "staticrypt_passphrase",
                 replaceHtmlCallback: function(plainHTML) {
-                    // Stay on the same document (no navigation, no document.write).
-                    // 1. Parse the decrypted HTML without executing scripts.
-                    var parser = new DOMParser();
-                    var newDoc = parser.parseFromString(plainHTML, 'text/html');
-
-                    // 2. Inject inlined CSS into this page's <head>.
-                    newDoc.querySelectorAll('style').forEach(function(style) {
-                        var s = document.createElement('style');
-                        s.textContent = style.textContent;
-                        document.head.appendChild(s);
-                    });
-
-                    // 3. Replace <body> with just the root mount point.
-                    document.body.innerHTML = '<div id="root"></div>';
-                    document.body.className = '';
-                    document.body.style.cssText = 'margin:0';
-
-                    // 4. Re-create and append each non-empty script so it executes.
-                    newDoc.querySelectorAll('script').forEach(function(old) {
-                        if (!old.textContent.trim()) return;
-                        var s = document.createElement('script');
-                        s.textContent = old.textContent;
-                        document.body.appendChild(s);
-                    });
+                    // Render decrypted content inside a full-screen srcdoc iframe.
+                    // The iframe gets its own isolated document: the IIFE executes
+                    // inside it, CSS is injected into its <head>, and React mounts
+                    // into its #root — no blob URL, no document.write, no origin issues.
+                    document.body.innerHTML = '';
+                    document.body.style.cssText = 'margin:0;padding:0;overflow:hidden';
+                    var iframe = document.createElement('iframe');
+                    iframe.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;border:none;display:block';
+                    iframe.srcdoc = plainHTML;
+                    document.body.appendChild(iframe);
                 },
                 clearLocalStorageCallback: null,
             };
