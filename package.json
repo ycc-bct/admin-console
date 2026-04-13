@@ -9,7 +9,7 @@
     "lint": "eslint",
     "bundle": "node scripts/inline.js",
     "encrypt": "staticrypt bundled.html --password BCT1234 -d docs --short --template scripts/staticrypt-template.html && mv docs/bundled.html docs/index.html",
-    "export": "npm run build && npm run bundle && npm run encrypt"
+    "export": "vite build && staticrypt vite-out/index.html --password BCT1234 -d docs --short --template scripts/staticrypt-template.html"
   },
   "dependencies": {
     "next": "16.2.2",
@@ -21,9 +21,12 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^6.0.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.2",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite": "^8.0.8",
+    "vite-plugin-singlefile": "^2.3.2"
   }
 }
