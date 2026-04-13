@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "bundle": "node scripts/inline.js",
-    "encrypt": "staticrypt bundled.html --password BCT1234 -d encrypted --short",
+    "encrypt": "staticrypt bundled.html --password BCT1234 -d docs --short",
     "export": "npm run build && npm run bundle && npm run encrypt"
   },
   "dependencies": {
