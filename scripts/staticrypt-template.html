@@ -232,12 +232,30 @@
                 rememberExpirationKey: "staticrypt_expiration",
                 rememberPassphraseKey: "staticrypt_passphrase",
                 replaceHtmlCallback: function(plainHTML) {
-                    // Blob URL navigation: the decrypted HTML uses plain <script>
-                    // (no type="module"), so it executes correctly in blob context.
-                    // Avoids Chrome's silent blocking of document.write() from
-                    // async callbacks.
-                    const blob = new Blob([plainHTML], { type: "text/html" });
-                    window.location.replace(URL.createObjectURL(blob));
+                    // Stay on the same document (no navigation, no document.write).
+                    // 1. Parse the decrypted HTML without executing scripts.
+                    var parser = new DOMParser();
+                    var newDoc = parser.parseFromString(plainHTML, 'text/html');
+
+                    // 2. Inject inlined CSS into this page's <head>.
+                    newDoc.querySelectorAll('style').forEach(function(style) {
+                        var s = document.createElement('style');
+                        s.textContent = style.textContent;
+                        document.head.appendChild(s);
+                    });
+
+                    // 3. Replace <body> with just the root mount point.
+                    document.body.innerHTML = '<div id="root"></div>';
+                    document.body.className = '';
+                    document.body.style.cssText = 'margin:0';
+
+                    // 4. Re-create and append each non-empty script so it executes.
+                    newDoc.querySelectorAll('script').forEach(function(old) {
+                        if (!old.textContent.trim()) return;
+                        var s = document.createElement('script');
+                        s.textContent = old.textContent;
+                        document.body.appendChild(s);
+                    });
                 },
                 clearLocalStorageCallback: null,
             };
