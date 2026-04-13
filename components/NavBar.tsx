@@ -1,23 +1,21 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useTab, Tab } from "@/lib/tab-context";
 
 export default function NavBar() {
-  const pathname = usePathname();
+  const { tab, setTab } = useTab();
 
-  const tabs = [
-    { href: "/", label: "Account List" },
-    { href: "/audit-log", label: "Audit Log" },
+  const tabs: { key: Tab; label: string }[] = [
+    { key: "accounts",  label: "Account List" },
+    { key: "audit-log", label: "Audit Log" },
   ];
 
   return (
     <nav className="bg-white border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-6 flex items-stretch justify-between h-14">
 
-        {/* Left: Giant Group logo + Admin Console label + Tabs */}
+        {/* Left: Logo + label + Tabs */}
         <div className="flex items-stretch gap-6">
-          {/* Logo + label — centered vertically */}
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5 flex-shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -30,29 +28,29 @@ export default function NavBar() {
 
           <div className="w-px bg-gray-200 self-center h-5 flex-shrink-0" />
 
-          {/* Tabs — stretch to full nav height */}
+          {/* Tabs */}
           <div className="flex items-stretch gap-1">
-            {tabs.map((tab) => {
-              const active = pathname === tab.href;
+            {tabs.map((t) => {
+              const active = tab === t.key;
               return (
-                <Link
-                  key={tab.href}
-                  href={tab.href}
-                  className={`relative flex items-center px-3 text-sm transition-colors ${
+                <button
+                  key={t.key}
+                  onClick={() => setTab(t.key)}
+                  className={`relative flex items-center h-full px-3 text-sm transition-colors ${
                     active ? "text-gray-800" : "text-gray-400 hover:text-gray-600"
                   }`}
                 >
-                  {tab.label}
+                  {t.label}
                   {active && (
                     <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#0057A8]" />
                   )}
-                </Link>
+                </button>
               );
             })}
           </div>
         </div>
 
-        {/* Right: Avatar button */}
+        {/* Right: Avatar */}
         <div className="flex items-center">
           <button
             className="w-8 h-8 rounded-full flex items-center justify-center text-white text-base font-bold flex-shrink-0"

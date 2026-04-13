@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "bundle": "node scripts/inline.js",
+    "encrypt": "staticrypt bundled.html --password BCT1234 -d encrypted --short",
+    "export": "npm run build && npm run bundle && npm run encrypt"
   },
   "dependencies": {
     "next": "16.2.2",

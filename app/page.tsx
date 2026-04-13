@@ -2,10 +2,12 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useStore } from "@/lib/store";
+import { useTab } from "@/lib/tab-context";
 import { AccountRecord } from "@/lib/data";
 import PendingApprovalsModal from "@/components/PendingApprovalsModal";
 import CompleteAccountModal from "@/components/CompleteAccountModal";
 import UserAvatar from "@/components/UserAvatar";
+import AuditLogPage from "@/components/AuditLogPage";
 
 const PAGE_SIZE = 10;
 
@@ -43,7 +45,12 @@ function PendingAvatar() {
   );
 }
 
-export default function AccountListPage() {
+export default function Page() {
+  const { tab } = useTab();
+  return tab === "audit-log" ? <AuditLogPage /> : <AccountListContent />;
+}
+
+function AccountListContent() {
   const { pendingRequests, accounts } = useStore();
   const [showModal, setShowModal] = useState(false);
   const [completeTarget, setCompleteTarget] = useState<AccountRecord | null>(null);
