@@ -232,11 +232,12 @@
                 rememberExpirationKey: "staticrypt_expiration",
                 rememberPassphraseKey: "staticrypt_passphrase",
                 replaceHtmlCallback: function(plainHTML) {
-                    // document.write works for IIFE (non-module) scripts; the
-                    // Vite build is configured to output IIFE so this is safe.
-                    document.open();
-                    document.write(plainHTML);
-                    document.close();
+                    // Blob URL navigation: the decrypted HTML uses plain <script>
+                    // (no type="module"), so it executes correctly in blob context.
+                    // Avoids Chrome's silent blocking of document.write() from
+                    // async callbacks.
+                    const blob = new Blob([plainHTML], { type: "text/html" });
+                    window.location.replace(URL.createObjectURL(blob));
                 },
                 clearLocalStorageCallback: null,
             };
