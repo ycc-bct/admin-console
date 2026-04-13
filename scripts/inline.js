@@ -78,7 +78,9 @@ html = html.replace(
   (match, before, src, after) => {
     const filePath = resolveOut(src);
     if (!fs.existsSync(filePath)) { console.warn("⚠️  JS not found:", src); return match; }
-    const js = fs.readFileSync(filePath, "utf8");
+    let js = fs.readFileSync(filePath, "utf8");
+    // Escape </script> to prevent premature tag closure
+    js = js.replace(/<\/script>/gi, "<\\/script>");
     // strip src attr, keep other attrs (defer, async, type, nonce …)
     const attrs = (before + " " + after)
       .replace(/\s*src=["'][^"']*["']/g, "")
