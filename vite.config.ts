@@ -14,11 +14,8 @@ export default defineConfig({
     outDir: "vite-out",
     assetsInlineLimit: 100_000_000,
     cssCodeSplit: false,
-    // IIFE format produces a plain <script> (no type="module") so it works
-    // correctly with both document.write() and blob URL decryption.
     rollupOptions: {
       output: {
-        format: "iife",
         inlineDynamicImports: true,
       },
     },

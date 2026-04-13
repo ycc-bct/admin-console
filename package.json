@@ -9,7 +9,7 @@
     "lint": "eslint",
     "bundle": "node scripts/inline.js",
     "encrypt": "staticrypt bundled.html --password BCT1234 -d docs --short --template scripts/staticrypt-template.html && mv docs/bundled.html docs/index.html",
-    "export": "vite build && node scripts/fix-script-tags.js && cp vite-out/index.html docs/index.html"
+    "export": "vite build && cp vite-out/index.html docs/index.html"
   },
   "dependencies": {
     "next": "16.2.2",
